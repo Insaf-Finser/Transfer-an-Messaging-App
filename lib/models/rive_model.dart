@@ -14,6 +14,7 @@ class RiveModel{
     this.status,
   });
 
+
   set setStatus(SMIBool state) {
     status = state;
   }
