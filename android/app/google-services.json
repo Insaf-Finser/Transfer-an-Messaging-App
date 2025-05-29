@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "637292459031",
+    "project_id": "messager-49061",
+    "storage_bucket": "messager-49061.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:637292459031:android:41a7e8b1f7ccaf4e54d852",
+        "android_client_info": {
+          "package_name": "com.example.transfer"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAVYj7Fk4xSMiL0vR6oxN4m9MenkghjQJs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
