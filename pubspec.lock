@@ -49,6 +49,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.2"
+  botton_nav_bar:
+    dependency: "direct main"
+    description:
+      name: botton_nav_bar
+      sha256: "9e1a8aeac8fcae2c14ff06a1c1f616caf211200f5aa7e862f6583534f63c4715"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.2"
   characters:
     dependency: transitive
     description:
