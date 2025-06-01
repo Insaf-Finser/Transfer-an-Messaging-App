@@ -20,6 +20,14 @@ List<NavItemModel> bottomNavItems = [
     ),
   ),
   NavItemModel(
+    title: 'Groups',
+    rive: RiveModel(
+      src: 'assets/animations/animated_icons2.riv',
+      artboard: 'Network',
+      stateMachineName: 'State Machine 1',
+    ),
+  ),
+  NavItemModel(
     title: 'Search',
     rive: RiveModel(
       src: 'assets/animations/animated_icons.riv',
@@ -27,14 +35,7 @@ List<NavItemModel> bottomNavItems = [
       stateMachineName: 'SEARCH_Interactivity',
     ),
   ),
-  NavItemModel(
-    title: 'Home',
-    rive: RiveModel(
-      src: 'assets/animations/animated_icons.riv',
-      artboard: 'HOME',
-      stateMachineName: 'HOME_interactivity',
-    ),
-  ),
+  
   NavItemModel(
     title: 'Settings',
     rive: RiveModel(

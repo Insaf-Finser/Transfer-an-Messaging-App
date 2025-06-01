@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
 import 'package:transfer/models/rive_item_model.dart';
 
-
 class MenuPage extends StatefulWidget {
   const MenuPage({super.key});
 
@@ -12,10 +11,19 @@ class MenuPage extends StatefulWidget {
 
 class _MenuPageState extends State<MenuPage> {
   List<SMIBool?> riveIconsInputs = [];
-
+  List<StateMachineController> controllers = [];
   int selectedNavIndex = 0;
 
-  void animateIcons(index){
+  // List of page widgets
+  final List<Widget> pages = [
+    ChatPage(),
+    SearchPage(),
+    HomePage(),
+    SettingsPage(),
+    ProfilePage(),
+  ];
+
+  void animateIcons(index) {
     final input = riveIconsInputs[index];
     if (input != null) {
       input.change(true);
@@ -27,22 +35,33 @@ class _MenuPageState extends State<MenuPage> {
 
   void rivInit(Artboard artboard, int index, dynamic riveItem) {
     StateMachineController? controller = StateMachineController.fromArtboard(
-                          artboard,
-                          riveItem,
-                        );
-                        if (controller != null) {
-                          artboard.addController(controller);
-                          final input = controller.findInput<bool>('active') as SMIBool?;
-                          setState(() {
-                            riveIconsInputs[index] = input;
-                          });
-                        }
+      artboard,
+      riveItem,
+    );
+    if (controller != null) {
+      artboard.addController(controller);
+
+      controllers.add(controller);
+      final input = controller.findInput<bool>('active') as SMIBool?;
+      setState(() {
+        riveIconsInputs[index] = input;
+      });
+    }
   }
-  
+
   @override
   void initState() {
     super.initState();
     riveIconsInputs = List<SMIBool?>.filled(bottomNavItems.length, null);
+  }
+
+  @override
+  void dispose() {
+    for (final controller in controllers) {
+      controller.dispose();
+    }
+    controllers.clear();
+    super.dispose();
   }
 
   @override
@@ -51,28 +70,22 @@ class _MenuPageState extends State<MenuPage> {
       appBar: AppBar(
         title: const Text('Menu'),
       ),
-      body: Center(
-        child: Text(
-          'Select a menu item using the navigation bar below.',
-          style: Theme.of(context).textTheme.titleMedium,
-        ),
-      ),
+      body: pages[selectedNavIndex], // Use the selected page widget
       bottomNavigationBar: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.only(bottom: 8.0), // Add padding to prevent overflow
+          padding: const EdgeInsets.only(bottom: 8.0),
           child: Container(
             height: 66,
             padding: const EdgeInsets.all(12),
-            margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 8), // Reduce vertical margin
+            margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
             decoration: BoxDecoration(
               color: const Color.fromARGB(227, 70, 70, 70),
               borderRadius: const BorderRadius.all(Radius.circular(24)),
               boxShadow: [
                 BoxShadow(
-                  color: const Color.fromARGB(51, 0, 0, 0), // 0.2 * 255 = 51
+                  color: const Color.fromARGB(51, 0, 0, 0),
                   blurRadius: 20,
                   offset: const Offset(0, 20),
-                  // changes position of shadow
                 ),
               ],
             ),
@@ -82,9 +95,9 @@ class _MenuPageState extends State<MenuPage> {
                 bottomNavItems.length,
                 (index) {
                   final riveItem = bottomNavItems[index].rive;
-            
+
                   return GestureDetector(
-                    onTap: (){
+                    onTap: () {
                       animateIcons(index);
                       setState(() {
                         selectedNavIndex = index;
@@ -121,10 +134,47 @@ class _MenuPageState extends State<MenuPage> {
   }
 }
 
+// Dummy page widgets for demonstration
+class ChatPage extends StatelessWidget {
+  const ChatPage({super.key});
+
+  @override
+  Widget build(BuildContext context) => 
+  const Center(child: Text('Chat Page'));
+}
+
+class SearchPage extends StatelessWidget {
+  const SearchPage({super.key});
+
+  @override
+  Widget build(BuildContext context) => const Center(child: Text('Search Page'));
+}
+
+class HomePage extends StatelessWidget {
+  const HomePage({super.key});
+
+  @override
+  Widget build(BuildContext context) => const Center(child: Text('Home Page'));
+}
+
+class SettingsPage extends StatelessWidget {
+  const SettingsPage({super.key});
+
+  @override
+  Widget build(BuildContext context) => const Center(child: Text('Settings Page'));
+}
+
+class ProfilePage extends StatelessWidget {
+  const ProfilePage({super.key});
+
+  @override
+  Widget build(BuildContext context) => const Center(child: Text('Profile Page'));
+}
+
 class AnimatedBar extends StatelessWidget {
   const AnimatedBar({
     super.key,
-    required this.isActive ,
+    required this.isActive,
   });
 
   final bool isActive;
@@ -132,11 +182,11 @@ class AnimatedBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: isActive ? 20 : 0, // Adjust width based on isActive
+      width: isActive ? 20 : 0,
       height: 4,
       margin: const EdgeInsets.only(bottom: 2),
       decoration: BoxDecoration(
-        color: const Color.from(alpha: 1, red: 0.537, green: 0.898, blue: 0.961),
+        color: const Color(0xFF89E5F5),
         borderRadius: BorderRadius.circular(2),
       ),
     );
