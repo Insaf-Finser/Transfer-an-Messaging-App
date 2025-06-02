@@ -17,8 +17,8 @@ class _MenuPageState extends State<MenuPage> {
   // List of page widgets
   final List<Widget> pages = [
     ChatPage(),
+    GroupPage(),
     SearchPage(),
-    HomePage(),
     SettingsPage(),
     ProfilePage(),
   ];
@@ -67,10 +67,9 @@ class _MenuPageState extends State<MenuPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Menu'),
-      ),
-      body: pages[selectedNavIndex], // Use the selected page widget
+      body: pages[selectedNavIndex],
+       // Use the selected page widget
+       backgroundColor: Colors.grey[200],
       bottomNavigationBar: SafeArea(
         child: Padding(
           padding: const EdgeInsets.only(bottom: 8.0),
@@ -79,13 +78,18 @@ class _MenuPageState extends State<MenuPage> {
             padding: const EdgeInsets.all(12),
             margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
             decoration: BoxDecoration(
-              color: const Color.fromARGB(227, 70, 70, 70),
+              color: Colors.grey[200],
               borderRadius: const BorderRadius.all(Radius.circular(24)),
               boxShadow: [
                 BoxShadow(
-                  color: const Color.fromARGB(51, 0, 0, 0),
-                  blurRadius: 20,
-                  offset: const Offset(0, 20),
+                  color : Colors.grey,
+                  blurRadius: 3,
+                  offset: const Offset(5, 5),
+                ),
+                BoxShadow(
+                  color: Colors.white,
+                  blurRadius: 5,
+                  offset: const Offset(-3, -5),
                 ),
               ],
             ),
@@ -133,42 +137,85 @@ class _MenuPageState extends State<MenuPage> {
     );
   }
 }
-
 // Dummy page widgets for demonstration
 class ChatPage extends StatelessWidget {
   const ChatPage({super.key});
 
   @override
   Widget build(BuildContext context) => 
-  const Center(child: Text('Chat Page'));
+  const Center(
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        SizedBox(height: 20),
+        Text('Chat', style: TextStyle(fontSize: 24)),
+      ],
+    ),
+  );
 }
 
 class SearchPage extends StatelessWidget {
   const SearchPage({super.key});
 
   @override
-  Widget build(BuildContext context) => const Center(child: Text('Search Page'));
+  Widget build(BuildContext context) => 
+  const Center(
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        SizedBox(height: 20),
+        Text('Search', style: TextStyle(fontSize: 24)),
+      ],
+    ),
+  );
 }
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+class GroupPage extends StatelessWidget {
+  const GroupPage({super.key});
 
   @override
-  Widget build(BuildContext context) => const Center(child: Text('Home Page'));
+  Widget build(BuildContext context) => 
+  const Center(
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        SizedBox(height: 20),
+        Text('Group', style: TextStyle(fontSize: 24)),
+      ],
+    ),
+  );
 }
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
 
   @override
-  Widget build(BuildContext context) => const Center(child: Text('Settings Page'));
+  Widget build(BuildContext context) => 
+  const Center(
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        SizedBox(height: 20),
+        Text('Settings', style: TextStyle(fontSize: 24)),
+      ],
+    ),
+  );
 }
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
   @override
-  Widget build(BuildContext context) => const Center(child: Text('Profile Page'));
+  Widget build(BuildContext context) => 
+  const Center(
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        SizedBox(height: 20),
+        Text('Profile', style: TextStyle(fontSize: 24)),
+      ],
+    ),
+  );
 }
 
 class AnimatedBar extends StatelessWidget {

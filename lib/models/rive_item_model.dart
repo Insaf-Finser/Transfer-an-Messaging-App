@@ -23,8 +23,8 @@ List<NavItemModel> bottomNavItems = [
     title: 'Groups',
     rive: RiveModel(
       src: 'assets/animations/animated_icons2.riv',
-      artboard: 'Network',
-      stateMachineName: 'State Machine 1',
+      artboard: 'NETWORK',
+      stateMachineName: 'NETWORK_Interactivity',
     ),
   ),
   NavItemModel(
