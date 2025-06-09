@@ -17,7 +17,14 @@ class _GetStartedPageState extends State<GetStartedPage> with SingleTickerProvid
 
   String selectedCountryCode = '+1';
   final TextEditingController phoneController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
   final FocusNode _phoneFocusNode = FocusNode();
+  final FocusNode _emailFocusNode = FocusNode();
+  final FocusNode _passwordFocusNode = FocusNode();
+
+  bool isEmailSignIn = false;
+  bool isPasswordVisible = false;
 
   // Expanded list of 50 countries with flags and codes
   final List<Map<String, String>> countries = [
@@ -99,7 +106,11 @@ class _GetStartedPageState extends State<GetStartedPage> with SingleTickerProvid
   void dispose() {
     _controller.dispose();
     phoneController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
     _phoneFocusNode.dispose();
+    _emailFocusNode.dispose();
+    _passwordFocusNode.dispose();
     super.dispose();
   }
 
@@ -216,163 +227,336 @@ class _GetStartedPageState extends State<GetStartedPage> with SingleTickerProvid
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'Enter your phone number to continue',
+                        isEmailSignIn 
+                            ? 'Enter your email and password to continue'
+                            : 'Enter your phone number to continue',
                         style: TextStyle(
                           fontSize: 16,
                           color: Colors.grey[700],
                         ),
                       ),
                       const SizedBox(height: 40),
-                      Text(
-                        'Phone Number',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey[700],
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: _phoneFocusNode.hasFocus 
-                                ? Colors.black 
-                                : Colors.grey[300]!,
-                            width: _phoneFocusNode.hasFocus ? 2 : 1,
+                      
+                      // Toggle between phone and email
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Phone',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: !isEmailSignIn ? Colors.black : Colors.grey,
+                              fontWeight: !isEmailSignIn ? FontWeight.bold : FontWeight.normal,
+                            ),
                           ),
-                          borderRadius: BorderRadius.circular(8),
+                          Switch(
+                            value: isEmailSignIn,
+                            onChanged: (value) {
+                              setState(() {
+                                isEmailSignIn = value;
+                              });
+                            },
+                            activeColor: Colors.black,
+                          ),
+                          Text(
+                            'Email',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: isEmailSignIn ? Colors.black : Colors.grey,
+                              fontWeight: isEmailSignIn ? FontWeight.bold : FontWeight.normal,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+                      
+                      if (!isEmailSignIn) ...[
+                        // Phone number input
+                        Text(
+                          'Phone Number',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey[700],
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
-                        child: Row(
-                          children: [
-                            // Country Code Dropdown
-                            GestureDetector(
-                              onTap: () {
-                                _showCountryCodePicker();
-                              },
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 12,
-                                  vertical: 16,
-                                ),
-                                decoration: BoxDecoration(
-                                  border: Border(
-                                    right: BorderSide(
-                                      color: Colors.grey[300]!,
-                                      width: 1,
-                                    ),
+                        const SizedBox(height: 8),
+                        Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: _phoneFocusNode.hasFocus 
+                                  ? Colors.black 
+                                  : Colors.grey[300]!,
+                              width: _phoneFocusNode.hasFocus ? 2 : 1,
+                            ),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Row(
+                            children: [
+                              // Country Code Dropdown
+                              GestureDetector(
+                                onTap: () {
+                                  _showCountryCodePicker();
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 16,
                                   ),
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(
-                                      countries.firstWhere(
-                                        (c) => c['code'] == selectedCountryCode,
-                                      )['flag']!,
-                                      style: const TextStyle(fontSize: 18),
-                                    ),
-                                    const SizedBox(width: 8),
-                                    Text(
-                                      selectedCountryCode,
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500,
+                                  decoration: BoxDecoration(
+                                    border: Border(
+                                      right: BorderSide(
+                                        color: Colors.grey[300]!,
+                                        width: 1,
                                       ),
                                     ),
-                                    const SizedBox(width: 4),
-                                    const Icon(
-                                      Icons.arrow_drop_down,
-                                      size: 20,
-                                      color: Colors.black,
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(
+                                        countries.firstWhere(
+                                          (c) => c['code'] == selectedCountryCode,
+                                        )['flag']!,
+                                        style: const TextStyle(fontSize: 18),
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Text(
+                                        selectedCountryCode,
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 4),
+                                      const Icon(
+                                        Icons.arrow_drop_down,
+                                        size: 20,
+                                        color: Colors.black,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              // Phone Number Input
+                              Expanded(
+                                child: TextField(
+                                  controller: phoneController,
+                                  focusNode: _phoneFocusNode,
+                                  decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    hintText: _getHintText(),
+                                    hintStyle: TextStyle(
+                                      color: Colors.grey[400],
+                                    ),
+                                    contentPadding: const EdgeInsets.symmetric(
+                                      vertical: 16,
+                                    ),
+                                  ),
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                  keyboardType: TextInputType.phone,
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.allow(
+                                      RegExp(r'[0-9\s-]'),
+                                    ),
+                                    LengthLimitingTextInputFormatter(_getMaxLength()),
+                                    TextInputFormatter.withFunction(
+                                      (oldValue, newValue) {
+                                        String digits = newValue.text.replaceAll(
+                                          RegExp(r'\D'),
+                                          '',
+                                        );
+                                        String formatted = _formatPhoneNumber(digits);
+                                        return TextEditingValue(
+                                          text: formatted,
+                                          selection: TextSelection.collapsed(
+                                            offset: formatted.length,
+                                          ),
+                                        );
+                                      },
                                     ),
                                   ],
                                 ),
                               ),
+                            ],
+                          ),
+                        ),
+                      ] else ...[
+                        // Email input
+                        Text(
+                          'Email',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey[700],
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: _emailFocusNode.hasFocus 
+                                  ? Colors.black 
+                                  : Colors.grey[300]!,
+                              width: _emailFocusNode.hasFocus ? 2 : 1,
                             ),
-                            const SizedBox(width: 8),
-                            // Phone Number Input
-                            Expanded(
-                              child: TextField(
-                                controller: phoneController,
-                                focusNode: _phoneFocusNode,
-                                decoration: InputDecoration(
-                                  border: InputBorder.none,
-                                  hintText: _getHintText(),
-                                  hintStyle: TextStyle(
-                                    color: Colors.grey[400],
-                                  ),
-                                  contentPadding: const EdgeInsets.symmetric(
-                                    vertical: 16,
-                                  ),
-                                ),
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                                keyboardType: TextInputType.phone,
-                                inputFormatters: [
-                                  FilteringTextInputFormatter.allow(
-                                    RegExp(r'[0-9\s-]'),
-                                  ),
-                                  LengthLimitingTextInputFormatter(_getMaxLength()),
-                                  TextInputFormatter.withFunction(
-                                    (oldValue, newValue) {
-                                      String digits = newValue.text.replaceAll(
-                                        RegExp(r'\D'),
-                                        '',
-                                      );
-                                      String formatted = _formatPhoneNumber(digits);
-                                      return TextEditingValue(
-                                        text: formatted,
-                                        selection: TextSelection.collapsed(
-                                          offset: formatted.length,
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ],
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: TextField(
+                            controller: emailController,
+                            focusNode: _emailFocusNode,
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              hintText: 'example@email.com',
+                              hintStyle: TextStyle(
+                                color: Colors.grey[400],
+                              ),
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 16,
                               ),
                             ),
-                          ],
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            keyboardType: TextInputType.emailAddress,
+                          ),
                         ),
-                      ),
+                        const SizedBox(height: 16),
+                        // Password input
+                        Text(
+                          'Password',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey[700],
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: _passwordFocusNode.hasFocus 
+                                  ? Colors.black 
+                                  : Colors.grey[300]!,
+                              width: _passwordFocusNode.hasFocus ? 2 : 1,
+                            ),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: TextField(
+                            controller: passwordController,
+                            focusNode: _passwordFocusNode,
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              hintText: 'Enter your password',
+                              hintStyle: TextStyle(
+                                color: Colors.grey[400],
+                              ),
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 16,
+                              ),
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  isPasswordVisible 
+                                      ? Icons.visibility 
+                                      : Icons.visibility_off,
+                                  color: Colors.grey,
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    isPasswordVisible = !isPasswordVisible;
+                                  });
+                                },
+                              ),
+                            ),
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            obscureText: !isPasswordVisible,
+                          ),
+                        ),
+                      ],
+                      
                       const SizedBox(height: 150),
                       SizedBox(
                         width: double.infinity,
                         height: 50,
                         child: ElevatedButton(
                           onPressed: () async {
-                            String phoneNumber = phoneController.text.trim();
-                            if (phoneNumber.isEmpty) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Please enter your phone number.'),
-                                ),
-                              );
-                              return;
-                            }
-                            // Here you would typically send the phone number to your backend
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('Sending code to $selectedCountryCode$phoneNumber'),
-                              ),
-                            );
-                            // call the sendOTP method from your AuthServices
-                            final result = await AuthService().sendOTP('$selectedCountryCode$phoneNumber');
-                            if (result.success && result.verificationId != null) {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => VerifyOtpPage(
-                                    verificationId: result.verificationId!,
-                                    phoneNumber: phoneNumber,
+                            if (isEmailSignIn) {
+                              // Email/password sign in
+                              String email = emailController.text.trim();
+                              String password = passwordController.text.trim();
+                              
+                              if (email.isEmpty || password.isEmpty) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Please enter both email and password.'),
                                   ),
+                                );
+                                return;
+                              }
+                              
+                              // Here you would typically authenticate with email/password
+                              try {
+                                // Call your AuthService for email/password authentication
+                                final result = await AuthService().signInWithEmailAndPassword(email, password);
+                                if (result.success) {
+                                  // Navigate to home or next screen
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text('Sign in successful')),
+                                  );
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(content: Text(result.error ?? 'Sign in failed')),
+                                  );
+                                }
+                              } catch (e) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text('Error: $e')),
+                                );
+                              }
+                            } else {
+                              // Phone number sign in
+                              String phoneNumber = phoneController.text.trim();
+                              if (phoneNumber.isEmpty) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Please enter your phone number.'),
+                                  ),
+                                );
+                                return;
+                              }
+                              
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Sending code to $selectedCountryCode$phoneNumber'),
                                 ),
                               );
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text(result.error ?? 'Failed to send OTP')),
-                              );
+                              
+                              final result = await AuthService().sendOTP('$selectedCountryCode$phoneNumber');
+                              if (result.success && result.verificationId != null) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => VerifyOtpPage(
+                                      verificationId: result.verificationId!,
+                                      phoneNumber: phoneNumber,
+                                    ),
+                                  ),
+                                );
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text(result.error ?? 'Failed to send OTP')),
+                                );
+                              }
                             }
                           },
                           style: ElevatedButton.styleFrom(
@@ -382,9 +566,9 @@ class _GetStartedPageState extends State<GetStartedPage> with SingleTickerProvid
                             ),
                             elevation: 0,
                           ),
-                          child: const Text(
-                            'Continue',
-                            style: TextStyle(
+                          child: Text(
+                            isEmailSignIn ? 'Sign In' : 'Continue',
+                            style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
                               color: Colors.white,
@@ -392,8 +576,6 @@ class _GetStartedPageState extends State<GetStartedPage> with SingleTickerProvid
                           ),
                         ),
                       ),
-                      
-                      
                     ],
                   ),
                 ),

@@ -129,4 +129,25 @@ class AuthService {
 
   /// Returns the currently authenticated user, if any.
   User? get currentUser => _auth.currentUser;
+
+
+
+//siginwithemailandpassword
+  Future<AuthResult> signInWithEmailAndPassword(String email, String password) async {
+    try {
+      final userCredential = await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      return AuthResult(
+        success: true,
+        user: userCredential.user,
+        isNewUser: userCredential.additionalUserInfo?.isNewUser ?? false,
+      );
+    } on FirebaseAuthException catch (e) {
+      return AuthResult(success: false, error: e.message ?? 'Sign-in failed');
+    } catch (e) {
+      return AuthResult(success: false, error: e.toString());
+    }
+  }
 }

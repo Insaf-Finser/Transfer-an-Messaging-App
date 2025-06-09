@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
+import 'package:transfer/presentaion/menu/menu.dart';
 import '../../../services/auth/auth.dart';
 
 class VerifyOtpPage extends StatefulWidget {
@@ -44,7 +45,10 @@ class _VerifyOtpPageState extends State<VerifyOtpPage> {
       );
 
       if (result.success) {
-        Navigator.of(context).pushReplacementNamed('/home');
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => MenuPage()),
+        );
       } else {
         setState(() {
           _errorText = "Invalid OTP. Please try again.";
