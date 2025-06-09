@@ -1,6 +1,9 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:transfer/presentaion/GetStarted/verifyotp.dart';
+import 'package:transfer/presentaion/menu/menu.dart';
 import 'package:transfer/services/auth/auth.dart';
 
 class GetStartedPage extends StatefulWidget {
@@ -217,27 +220,6 @@ class _GetStartedPageState extends State<GetStartedPage> with SingleTickerProvid
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        'Get Started',
-                        style: TextStyle(
-                          fontSize: 32,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        isEmailSignIn 
-                            ? 'Enter your email and password to continue'
-                            : 'Enter your phone number to continue',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.grey[700],
-                        ),
-                      ),
-                      const SizedBox(height: 40),
-                      
-                      // Toggle between phone and email
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -268,6 +250,29 @@ class _GetStartedPageState extends State<GetStartedPage> with SingleTickerProvid
                           ),
                         ],
                       ),
+                      const SizedBox(height: 30),
+                      const Text(
+                        'Get Started',
+                        style: TextStyle(
+                          fontSize: 32,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        isEmailSignIn 
+                            ? 'Enter your email and password to continue'
+                            : 'Enter your phone number to continue',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.grey[700],
+                        ),
+                      ),
+                      const SizedBox(height: 40),
+                      
+                      // Toggle between phone and email
+                      
                       const SizedBox(height: 20),
                       
                       if (!isEmailSignIn) ...[
@@ -512,7 +517,13 @@ class _GetStartedPageState extends State<GetStartedPage> with SingleTickerProvid
                                   // Navigate to home or next screen
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(content: Text('Sign in successful')),
-                                  );
+                                    );
+                                    Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                      builder: (context) => MenuPage(),
+                                      ),
+                                    );
                                 } else {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(content: Text(result.error ?? 'Sign in failed')),
