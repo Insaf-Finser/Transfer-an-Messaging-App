@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:transfer/presentaion/GetStarted/signup.dart';
 import 'package:transfer/presentaion/GetStarted/verifyotp.dart';
 import 'package:transfer/presentaion/menu/menu.dart';
 import 'package:transfer/services/auth/auth.dart';
@@ -488,6 +489,25 @@ class _GetStartedPageState extends State<GetStartedPage> with SingleTickerProvid
                           ),
                         ),
                       ],
+                      const SizedBox(height: 10),
+                      // Sign Up button
+                      if(isEmailSignIn) ...[
+                        Row(
+                          children: [
+                            Text("  If you dont have an account,",style: TextStyle(letterSpacing: 1),),
+                            TextButton(onPressed: (){
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const SignUp(),
+                                ),
+                              );
+                            }, child: Text('Sign Up' ,style: TextStyle(color: Colors.black),)),
+                          ],
+                        ),
+                      ],
+                      
+                      
                       
                       const SizedBox(height: 150),
                       SizedBox(

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
 import 'package:transfer/models/rive_item_model.dart';
+import 'package:transfer/presentaion/GetStarted/getstarted.dart';
+import 'package:transfer/services/auth/auth.dart';
 
 class MenuPage extends StatefulWidget {
   const MenuPage({super.key});
@@ -207,12 +209,47 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => 
-  const Center(
+  Center(
     child: Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        SizedBox(height: 20),
-        Text('Profile', style: TextStyle(fontSize: 24)),
+        //logout button
+        ElevatedButton(onPressed: () async {
+          await AuthService().signOut();
+          if(context.mounted) {
+            // Show a snackbar or dialog to confirm logout
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Logged out successfully')),
+            );
+            Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const GetStartedPage()),
+          );
+          }
+          
+        }, child: const Text('Logout')) ,
+
+        const SizedBox(height: 20),
+        const Text('Profile', style: TextStyle(fontSize: 24)),
+        const SizedBox(height: 20),
+        const Text('User Profile Information', style: TextStyle(fontSize: 16)),
+        const Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CircleAvatar(
+              radius: 40,
+              backgroundColor: Color(0xFF89E5F5),
+            ),
+            SizedBox(width: 20),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Username', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                Text(''),
+              ],
+            ),
+          ],
+        )
       ],
     ),
   );

@@ -136,76 +136,69 @@ class _SplashPageState extends State<SplashPage>
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      routes: {
-        '/': (context) => const GetStartedPage(),
-        '/login': (context) =>  Container(), // Replace with your login page
-      },
-      home: Scaffold(
-        backgroundColor: Colors.white,
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Lottie.asset(
-                'assets/animations/lock.json',
-                width: 50,
-                height: 50,
-                fit: BoxFit.cover,
-                repeat: false,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SlideTransition(
-                    position: _tPositionAnimation,
-                    child: FadeTransition(
-                      opacity: _tAnimation,
-                      child: ScaleTransition(
-                        scale: _tAnimation,
-                        child: _buildT(),
-                      ),
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Lottie.asset(
+              'assets/animations/lock.json',
+              width: 50,
+              height: 50,
+              fit: BoxFit.cover,
+              repeat: false,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SlideTransition(
+                  position: _tPositionAnimation,
+                  child: FadeTransition(
+                    opacity: _tAnimation,
+                    child: ScaleTransition(
+                      scale: _tAnimation,
+                      child: _buildT(),
                     ),
-                  ),
-                  const SizedBox(width: 4),
-                  AnimatedBuilder(
-                    animation: _textOffsetAnimation,
-                    builder: (context, child) {
-                      return Opacity(
-                        opacity: _textOpacityAnimation.value,
-                        child: Transform.translate(
-                          offset: Offset(_textOffsetAnimation.value, 0),
-                          child: child,
-                        ),
-                      );
-                    },
-                    child: Text(
-                      'ransfer',
-                      style: TextStyle(
-                        fontSize: 52,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                        letterSpacing: 2,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 30),
-              FadeTransition(
-                opacity: _textOpacityAnimation,
-                child: const Text(
-                  'Secure messaging made simple',
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.black54,
-                    letterSpacing: 1,
                   ),
                 ),
+                const SizedBox(width: 4),
+                AnimatedBuilder(
+                  animation: _textOffsetAnimation,
+                  builder: (context, child) {
+                    return Opacity(
+                      opacity: _textOpacityAnimation.value,
+                      child: Transform.translate(
+                        offset: Offset(_textOffsetAnimation.value, 0),
+                        child: child,
+                      ),
+                    );
+                  },
+                  child: Text(
+                    'ransfer',
+                    style: TextStyle(
+                      fontSize: 52,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                      letterSpacing: 2,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 30),
+            FadeTransition(
+              opacity: _textOpacityAnimation,
+              child: const Text(
+                'Secure messaging made simple',
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.black54,
+                  letterSpacing: 1,
+                ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

@@ -152,4 +152,24 @@ class AuthService {
       return AuthResult(success: false, error: e.toString());
     }
   }
+
+
+//creating new user with email and password
+  Future<AuthResult> createUserWithEmailAndPassword(String email, String password) async {
+    try {
+      final userCredential = await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      return AuthResult(
+        success: true,
+        user: userCredential.user,
+        isNewUser: userCredential.additionalUserInfo?.isNewUser ?? false,
+      );
+    } on FirebaseAuthException catch (e) {
+      return AuthResult(success: false, error: e.message ?? 'User creation failed');
+    } catch (e) {
+      return AuthResult(success: false, error: e.toString());
+    }
+  }
 }
