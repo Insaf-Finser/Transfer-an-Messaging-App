@@ -4,8 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:transfer/presentaion/GetStarted/signup.dart';
 import 'package:transfer/presentaion/GetStarted/verifyotp.dart';
+import 'package:transfer/presentaion/Information/info.dart';
 import 'package:transfer/presentaion/menu/menu.dart';
+import 'package:transfer/core/navigation/post_auth.dart';
 import 'package:transfer/services/auth/auth.dart';
+import 'package:transfer/core/firestore/user_repository.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class GetStartedPage extends StatefulWidget {
   const GetStartedPage({super.key});
@@ -528,22 +532,32 @@ class _GetStartedPageState extends State<GetStartedPage> with SingleTickerProvid
                                 );
                                 return;
                               }
-                              
-                              // Here you would typically authenticate with email/password
                               try {
-                                // Call your AuthService for email/password authentication
                                 final result = await AuthService().signInWithEmailAndPassword(email, password);
                                 if (result.success) {
-                                  // Navigate to home or next screen
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(content: Text('Sign in successful')),
-                                    );
-                                    Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                      builder: (context) => MenuPage(),
-                                      ),
-                                    );
+                                  );
+                                  final user = FirebaseAuth.instance.currentUser;
+                                  if (user != null) {
+                                    final hasProfile = await UserRepository()
+                                        .hasProfile(user.uid);
+                                    if (hasProfile) {
+                                      Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => MenuPage(),
+                                        ),
+                                      );
+                                    } else {
+                                      Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => InfoPage(),
+                                        ),
+                                      );
+                                    }
+                                  }
                                 } else {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(content: Text(result.error ?? 'Sign in failed')),
@@ -572,14 +586,20 @@ class _GetStartedPageState extends State<GetStartedPage> with SingleTickerProvid
                                 ),
                               );
                               
-                              final result = await AuthService().sendOTP('$selectedCountryCode$phoneNumber');
-                              if (result.success && result.verificationId != null) {
+                              final fullPhone = '$selectedCountryCode$phoneNumber';
+                              final result = await AuthService().sendOTP(fullPhone);
+                              if (result.success && result.user != null) {
+                                await PostAuthNavigator.navigate(
+                                  context,
+                                  phoneNumber: fullPhone,
+                                );
+                              } else if (result.success && result.verificationId != null) {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => VerifyOtpPage(
                                       verificationId: result.verificationId!,
-                                      phoneNumber: phoneNumber,
+                                      phoneNumber: fullPhone,
                                     ),
                                   ),
                                 );

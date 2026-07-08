@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:transfer/presentaion/Information/info.dart';
 import 'package:transfer/services/auth/auth.dart';
 
 class SignUp extends StatefulWidget {
@@ -257,20 +258,20 @@ class _SignUpState extends State<SignUp> {
                     // Proceed with sign up logic (e.g., Firebase Auth)
                     // ...
                     final result = await AuthService().createUserWithEmailAndPassword(email, password);
+                    if (!context.mounted) return;
                     if (!result.success) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text(result.error ?? 'Sign Up Failed')),
                       );
                       return;
                     }
-                    else{
-                      ScaffoldMessenger.of(context).showSnackBar(
+                    ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('Sign Up Successful')),
-                      );
-                      Navigator.pop(context);
-                    }
-
-                     // Navigate back to sign in
+                    );
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => const InfoPage()),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.black,

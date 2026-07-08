@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
 import 'package:transfer/models/rive_item_model.dart';
-import 'package:transfer/presentaion/GetStarted/getstarted.dart';
-import 'package:transfer/services/auth/auth.dart';
+import 'package:transfer/presentaion/chat/chat_list_page.dart';
+import 'package:transfer/presentaion/profile/profile_page.dart';
+import 'package:transfer/presentaion/search/search_page.dart';
+import 'package:transfer/presentaion/settings/settings_page.dart';
 
 class MenuPage extends StatefulWidget {
   const MenuPage({super.key});
@@ -16,11 +18,10 @@ class _MenuPageState extends State<MenuPage> {
   List<StateMachineController> controllers = [];
   int selectedNavIndex = 0;
 
-  // List of page widgets
-  final List<Widget> pages = [
-    ChatPage(),
+  final List<Widget> pages = const [
+    ChatListPage(),
     GroupPage(),
-    SearchPage(),
+    UserSearchPage(),
     SettingsPage(),
     ProfilePage(),
   ];
@@ -70,8 +71,7 @@ class _MenuPageState extends State<MenuPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: pages[selectedNavIndex],
-       // Use the selected page widget
-       backgroundColor: Colors.grey[200],
+      backgroundColor: Colors.grey[200],
       bottomNavigationBar: SafeArea(
         child: Padding(
           padding: const EdgeInsets.only(bottom: 8.0),
@@ -84,7 +84,7 @@ class _MenuPageState extends State<MenuPage> {
               borderRadius: const BorderRadius.all(Radius.circular(24)),
               boxShadow: [
                 BoxShadow(
-                  color : Colors.grey,
+                  color: Colors.grey,
                   blurRadius: 3,
                   offset: const Offset(5, 5),
                 ),
@@ -139,120 +139,20 @@ class _MenuPageState extends State<MenuPage> {
     );
   }
 }
-// Dummy page widgets for demonstration
-class ChatPage extends StatelessWidget {
-  const ChatPage({super.key});
-
-  @override
-  Widget build(BuildContext context) => 
-  const Center(
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        SizedBox(height: 20),
-        Text('Chat', style: TextStyle(fontSize: 24)),
-      ],
-    ),
-  );
-}
-
-class SearchPage extends StatelessWidget {
-  const SearchPage({super.key});
-
-  @override
-  Widget build(BuildContext context) => 
-  const Center(
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        SizedBox(height: 20),
-        Text('Search', style: TextStyle(fontSize: 24)),
-      ],
-    ),
-  );
-}
 
 class GroupPage extends StatelessWidget {
   const GroupPage({super.key});
 
   @override
-  Widget build(BuildContext context) => 
-  const Center(
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        SizedBox(height: 20),
-        Text('Group', style: TextStyle(fontSize: 24)),
-      ],
-    ),
-  );
-}
-
-class SettingsPage extends StatelessWidget {
-  const SettingsPage({super.key});
-
-  @override
-  Widget build(BuildContext context) => 
-  const Center(
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        SizedBox(height: 20),
-        Text('Settings', style: TextStyle(fontSize: 24)),
-      ],
-    ),
-  );
-}
-
-class ProfilePage extends StatelessWidget {
-  const ProfilePage({super.key});
-
-  @override
-  Widget build(BuildContext context) => 
-  Center(
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        //logout button
-        ElevatedButton(onPressed: () async {
-          await AuthService().signOut();
-          if(context.mounted) {
-            // Show a snackbar or dialog to confirm logout
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Logged out successfully')),
-            );
-            Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const GetStartedPage()),
-          );
-          }
-          
-        }, child: const Text('Logout')) ,
-
-        const SizedBox(height: 20),
-        const Text('Profile', style: TextStyle(fontSize: 24)),
-        const SizedBox(height: 20),
-        const Text('User Profile Information', style: TextStyle(fontSize: 16)),
-        const Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+  Widget build(BuildContext context) => const Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            CircleAvatar(
-              radius: 40,
-              backgroundColor: Color(0xFF89E5F5),
-            ),
-            SizedBox(width: 20),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Username', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                Text(''),
-              ],
-            ),
+            SizedBox(height: 20),
+            Text('Group', style: TextStyle(fontSize: 24)),
           ],
-        )
-      ],
-    ),
-  );
+        ),
+      );
 }
 
 class AnimatedBar extends StatelessWidget {

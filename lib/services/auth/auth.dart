@@ -2,6 +2,7 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:async';
+import 'package:transfer/core/firestore/user_repository.dart';
 
 /// A class to encapsulate the result of authentication operations.
 class AuthResult {
@@ -16,7 +17,7 @@ class AuthResult {
     this.user,
     this.verificationId,
     this.error,
-    this.isNewUser = false,
+    this.isNewUser = true,
   });
 }
 
@@ -26,7 +27,13 @@ class AuthService {
 
   int? _resendToken; // Optional: track resend token for OTP resend
 
-  AuthService({FirebaseAuth? auth}) : _auth = auth ?? FirebaseAuth.instance;
+  AuthService({
+    FirebaseAuth? auth,
+    UserRepository? userRepository,
+  })  : _auth = auth ?? FirebaseAuth.instance,
+        _userRepository = userRepository ?? UserRepository();
+
+  final UserRepository _userRepository;
 
   /// Sends an OTP to the given [phoneNumber].
   /// You can optionally provide a [timeout] and a [onStatus] callback for logging.
@@ -59,7 +66,7 @@ class AuthService {
               completer.complete(AuthResult(
                 success: true,
                 user: userCredential.user,
-                isNewUser: userCredential.additionalUserInfo?.isNewUser ?? false,
+                isNewUser: userCredential.additionalUserInfo!.isNewUser,
               ));
               onStatus?.call("Phone verification completed automatically.");
             } catch (e) {
@@ -115,7 +122,7 @@ class AuthService {
       return AuthResult(
         success: true,
         user: userCredential.user,
-        isNewUser: userCredential.additionalUserInfo?.isNewUser ?? false,
+        isNewUser: userCredential.additionalUserInfo!.isNewUser,
       );
     } on FirebaseAuthException catch (e) {
       return AuthResult(success: false, error: e.message ?? 'OTP verification failed');
@@ -144,7 +151,7 @@ class AuthService {
       return AuthResult(
         success: true,
         user: userCredential.user,
-        isNewUser: userCredential.additionalUserInfo?.isNewUser ?? false,
+        isNewUser: userCredential.additionalUserInfo!.isNewUser,
       );
     } on FirebaseAuthException catch (e) {
       return AuthResult(success: false, error: e.message ?? 'Sign-in failed');
@@ -161,10 +168,15 @@ class AuthService {
         email: email,
         password: password,
       );
+      final uid = userCredential.user?.uid;
+      if (uid != null) {
+        await _userRepository.ensureUserDocument(uid: uid, email: email);
+      }
+
       return AuthResult(
         success: true,
         user: userCredential.user,
-        isNewUser: userCredential.additionalUserInfo?.isNewUser ?? false,
+        isNewUser: true,
       );
     } on FirebaseAuthException catch (e) {
       return AuthResult(success: false, error: e.message ?? 'User creation failed');

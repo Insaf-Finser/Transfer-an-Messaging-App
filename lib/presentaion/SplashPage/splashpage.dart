@@ -1,8 +1,11 @@
 // ignore_for_file: depend_on_referenced_packages
 
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:transfer/core/firestore/user_repository.dart';
 import 'package:transfer/presentaion/GetStarted/getstarted.dart';
+import 'package:transfer/presentaion/Information/info.dart';
+import 'package:transfer/presentaion/menu/menu.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -78,19 +81,31 @@ class _SplashPageState extends State<SplashPage>
 
     _controller.forward();
 
-    // Navigate after animation completes
-    _controller.addStatusListener((status) {
-      if (status == AnimationStatus.completed) {
-        Future.delayed(const Duration(milliseconds: 1100), () {
-          if (mounted) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => const GetStartedPage()),
-            );
-          }
-        });
-      }
-    });
+    _navigateWhenReady();
+  }
+
+  Future<void> _navigateWhenReady() async {
+    await Future.delayed(const Duration(milliseconds: 3600));
+    if (!mounted) return;
+
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const GetStartedPage()),
+      );
+      return;
+    }
+
+    final hasProfile = await UserRepository().hasProfile(user.uid);
+    if (!mounted) return;
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (_) => hasProfile ? const MenuPage() : const InfoPage(),
+      ),
+    );
   }
 
   @override
@@ -142,12 +157,10 @@ class _SplashPageState extends State<SplashPage>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Lottie.asset(
-              'assets/animations/lock.json',
-              width: 50,
-              height: 50,
-              fit: BoxFit.cover,
-              repeat: false,
+            Icon(
+              Icons.lock_outline,
+              size: 50,
+              color: Colors.black54,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,

@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
-import 'package:transfer/presentaion/menu/menu.dart';
+import 'package:transfer/core/navigation/post_auth.dart';
 import '../../../services/auth/auth.dart';
 
 class VerifyOtpPage extends StatefulWidget {
@@ -45,9 +45,9 @@ class _VerifyOtpPageState extends State<VerifyOtpPage> {
       );
 
       if (result.success) {
-        Navigator.pushReplacement(
+        await PostAuthNavigator.navigate(
           context,
-          MaterialPageRoute(builder: (context) => MenuPage()),
+          phoneNumber: widget.phoneNumber,
         );
       } else {
         setState(() {
@@ -64,9 +64,21 @@ class _VerifyOtpPageState extends State<VerifyOtpPage> {
   }
 
   void _resendOtp() async {
-    // OPTIONAL: Implement actual resend logic via Firebase or your backend
+    setState(() {
+      _isLoading = true;
+      _errorText = null;
+    });
+    final result = await AuthService().sendOTP(widget.phoneNumber);
+    if (!mounted) return;
+    setState(() => _isLoading = false);
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('OTP resent to your phone number.')),
+      SnackBar(
+        content: Text(
+          result.success
+              ? 'OTP resent to your phone number.'
+              : result.error ?? 'Failed to resend OTP',
+        ),
+      ),
     );
   }
 
